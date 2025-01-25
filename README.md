@@ -1,2 +1,0 @@
-# lagourounaki
-La Gourounaki Website
