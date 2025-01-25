@@ -186,10 +186,10 @@ export function AuthForm() {
               forgotten_password: {
                 email_label: 'Email',
                 password_label: 'Password',
-                button_label: 'Send Reset Instructions',
-                loading_button_label: 'Sending reset instructions...',
-                confirmation_text: 'Check your email for the password reset link',
-                link_text: 'Forgot your password?'
+                button_label: 'Send the log in link to your email',
+                loading_button_label: 'Sending the link...',
+                confirmation_text: 'Check your email for the log in link',
+                link_text: 'Login with link?
               },
               update_password: {
                 password_label: 'New Password',
