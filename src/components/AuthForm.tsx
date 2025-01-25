@@ -189,7 +189,7 @@ export function AuthForm() {
                 button_label: 'Send the log in link to your email',
                 loading_button_label: 'Sending the link...',
                 confirmation_text: 'Check your email for the log in link',
-                link_text: 'Login with link?
+                link_text: 'Login with link?'
               },
               update_password: {
                 password_label: 'New Password',
