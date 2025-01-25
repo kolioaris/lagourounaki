@@ -172,7 +172,7 @@ export function AuthForm() {
                 loading_button_label: 'Signing in...',
                 password_input_placeholder: 'Your password',
                 email_input_placeholder: 'Your email',
-                forgot_password_label: 'Forgot password?',
+                forgot_password_label: 'Log in with link?',
                 link_text: "Already have an account? Sign in",
               },
               sign_up: {
