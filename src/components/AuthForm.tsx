@@ -151,7 +151,7 @@ export function AuthForm() {
                 }
               }
             },
-          />
+          ></Auth>
           localization={{
             variables: {
               sign_in: {
