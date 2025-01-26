@@ -142,6 +142,7 @@ export function AuthForm() {
               }
             }
           }
+          }
           localization={{
             variables: {
               sign_in: {
