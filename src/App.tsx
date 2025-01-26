@@ -1,5 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, ReactNode } from 'react';
 import { supabase } from './lib/supabase';
 import { AuthForm } from './components/AuthForm';
 import { Feed } from './pages/Feed';
@@ -8,13 +8,18 @@ import { TagPosts } from './pages/TagPosts';
 import { Create } from './pages/Create';
 import { Search } from './pages/Search';
 import { Messages } from './pages/Messages';
+import { Activity } from './pages/Activity';
 import { NotFound } from './pages/NotFound';
 import { OnboardingModal } from './components/OnboardingModal';
 import { Post } from './pages/Post';
 import { Footer } from './components/Footer';
 
-function PrivateRoute({ children }) {
-  const [session, setSession] = useState(null);
+interface PrivateRouteProps {
+  children: ReactNode;
+}
+
+function PrivateRoute({ children }: PrivateRouteProps) {
+  const [session, setSession] = useState<any>(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -56,13 +61,17 @@ function PrivateRoute({ children }) {
   }
 
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       {showOnboarding && (
         <OnboardingModal onComplete={() => setShowOnboarding(false)} />
       )}
-      {children}
-      <Footer />
-    </>
+      <div className="flex-1 pb-16 md:pb-0 md:pl-16">
+        {children}
+      </div>
+      <div className="md:pl-16">
+        <Footer />
+      </div>
+    </div>
   );
 }
 
@@ -116,6 +125,14 @@ function App() {
           element={
             <PrivateRoute>
               <Messages />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/activity"
+          element={
+            <PrivateRoute>
+              <Activity />
             </PrivateRoute>
           }
         />

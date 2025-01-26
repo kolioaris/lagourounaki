@@ -172,7 +172,7 @@ export function AuthForm() {
                 loading_button_label: 'Signing in...',
                 password_input_placeholder: 'Your password',
                 email_input_placeholder: 'Your email',
-                forgot_password_label: 'Log in with link?',
+                forgot_password_label: 'Forgot password?',
                 link_text: "Already have an account? Sign in",
               },
               sign_up: {
@@ -186,10 +186,10 @@ export function AuthForm() {
               forgotten_password: {
                 email_label: 'Email',
                 password_label: 'Password',
-                button_label: 'Send the log in link to your email',
-                loading_button_label: 'Sending the link...',
-                confirmation_text: 'Check your email for the log in link',
-                link_text: 'Login with link?'
+                button_label: 'Send Reset Instructions',
+                loading_button_label: 'Sending reset instructions...',
+                confirmation_text: 'Check your email for the password reset link',
+                link_text: 'Forgot your password?'
               },
               update_password: {
                 password_label: 'New Password',

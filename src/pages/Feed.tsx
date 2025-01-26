@@ -43,36 +43,38 @@ export function Feed() {
           )
         `);
 
-      if (activeTab === 'team') {
-        // Get posts from team members
-        const { data: teamMembers } = await supabase
-          .from('team_members')
-          .select('user_id')
-          .eq('team_leader_id', currentUser?.id);
+      if (activeTab === 'admin') {
+        // Get posts from admin team members
+        const { data: adminTeam } = await supabase
+          .from('admin_team')
+          .select('user_id');
 
-        if (teamMembers?.length > 0) {
-          const teamUserIds = teamMembers.map(member => member.user_id);
-          query = query.in('user_id', teamUserIds);
+        if (adminTeam?.length > 0) {
+          const adminUserIds = adminTeam.map(member => member.user_id);
+          query = query.in('user_id', adminUserIds);
         } else {
           setPosts([]);
           setIsLoading(false);
           return;
         }
       } else if (activeTab === 'new') {
-        query = query.order('created_at', { ascending: false });
+        query = query.order('created_at', { ascending: false })
+          .neq('user_id', currentUser?.id);
       } else {
-        // Feed tab: Show random posts that haven't been seen
+        // Feed tab: Show random posts that haven't been seen, excluding own posts
         const { data: seenPostIds } = await supabase
           .from('seen_posts')
           .select('post_id')
           .eq('user_id', currentUser?.id);
 
+        query = query.neq('user_id', currentUser?.id);
+
         if (seenPostIds?.length > 0) {
           query = query.not('id', 'in', `(${seenPostIds.map(p => p.post_id).join(',')})`);
         }
         
-        // Add random ordering
-        query = query.order('created_at', { ascending: false }).limit(10);
+        // Use random ordering for the feed tab
+        query = query.order('RANDOM()').limit(10);
       }
 
       const { data } = await query;
@@ -124,14 +126,14 @@ export function Feed() {
 
   const tabs = [
     { id: 'feed', label: 'Feed', icon: Sparkles },
-    { id: 'team', label: 'Team', icon: Users },
+    { id: 'admin', label: 'Admins', icon: Users },
     { id: 'new', label: 'New', icon: Clock }
   ];
 
   return (
     <div className="flex min-h-screen">
       <Sidebar />
-      <main className="flex-1 ml-16 bg-gray-800 p-8">
+      <main className="flex-1 pl-16 bg-gray-800 p-8">
         <div className="max-w-2xl mx-auto">
           <div className="flex gap-2 mb-8">
             {tabs.map(tab => {
@@ -159,8 +161,8 @@ export function Feed() {
             </div>
           ) : posts.length === 0 ? (
             <div className="text-center py-8 text-gray-400">
-              {activeTab === 'team' 
-                ? "No team posts available. Add team members to see their posts!"
+              {activeTab === 'admin' 
+                ? "No admin posts available."
                 : "No posts available."}
             </div>
           ) : (

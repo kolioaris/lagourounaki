@@ -40,6 +40,15 @@ export function Search() {
   const saveSearch = async () => {
     if (!searchTerm.trim() || !currentUser) return;
 
+    // Delete previous searches with the same term and type
+    await supabase
+      .from('recent_searches')
+      .delete()
+      .eq('user_id', currentUser.id)
+      .eq('search_term', searchTerm)
+      .eq('search_type', searchType);
+
+    // Add new search
     await supabase
       .from('recent_searches')
       .insert({
