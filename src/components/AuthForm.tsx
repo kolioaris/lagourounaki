@@ -13,6 +13,13 @@ export function AuthForm() {
   const navigate = useNavigate();
 
   useEffect(() => {
+    const hash = window.location.hash;
+    if (hash && hash.includes('type=recovery')) {
+      setView('update_password');
+    } else {
+      setView('sign_in');
+    }
+
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       if (event === 'SIGNED_IN' && session) {
         navigate('/');
@@ -57,6 +64,9 @@ export function AuthForm() {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-900 p-4">
       <div className="max-w-md w-full bg-gray-800 rounded-lg shadow-xl p-8">
+        <h1 className="text-2xl font-bold text-center mb-8 text-white">
+          {view === 'update_password' ? 'Set New Password' : 'Welcome'}
+        </h1>
         {error && (
           <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm">
             {error}
@@ -140,9 +150,19 @@ export function AuthForm() {
                   fontSize: '0.875rem',
                 }
               }
+            },
+            className: {
+              container: 'text-gray-100',
+              button: `bg-primary-500 hover:bg-primary-600 transition-colors ${
+                view === 'sign_up' && !tosAgreed ? 'opacity-50 cursor-not-allowed' : ''
+              }`,
+              input: 'bg-gray-700 border-gray-600 focus:border-primary-500 focus:ring-primary-500',
+              label: 'text-gray-300',
+              loader: 'text-primary-500',
+              divider: 'bg-gray-700',
+              message: view === 'forgotten_password' ? 'text-black' : 'text-gray-100',
             }
-          }
-          }
+          }}
           localization={{
             variables: {
               sign_in: {
@@ -152,6 +172,7 @@ export function AuthForm() {
                 loading_button_label: 'Signing in...',
                 password_input_placeholder: 'Your password',
                 email_input_placeholder: 'Your email',
+                forgot_password_label: 'Forgot password?',
                 link_text: "Already have an account? Sign in",
               },
               sign_up: {
@@ -160,6 +181,21 @@ export function AuthForm() {
                 button_label: 'Sign Up',
                 loading_button_label: 'Signing up...',
                 link_text: "Don't have an account? Sign up",
+                confirmation_text: 'Check your email for the confirmation link',
+              },
+              forgotten_password: {
+                email_label: 'Email',
+                password_label: 'Password',
+                button_label: 'Send Reset Instructions',
+                loading_button_label: 'Sending reset instructions...',
+                confirmation_text: 'Check your email for the password reset link',
+                link_text: 'Forgot your password?'
+              },
+              update_password: {
+                password_label: 'New Password',
+                button_label: 'Update Password',
+                loading_button_label: 'Updating password...',
+                confirmation_text: 'Your password has been updated successfully'
               }
             }
           }}
