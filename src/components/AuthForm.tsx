@@ -151,18 +151,6 @@ export function AuthForm() {
                 }
               }
             },
-            className: {
-              container: 'text-gray-100',
-              button: `bg-primary-500 hover:bg-primary-600 transition-colors ${
-                view === 'sign_up' && !tosAgreed ? 'opacity-50 cursor-not-allowed' : ''
-              }`,
-              input: 'bg-gray-700 border-gray-600 focus:border-primary-500 focus:ring-primary-500',
-              label: 'text-gray-300',
-              loader: 'text-primary-500',
-              divider: 'bg-gray-700',
-              message: view === 'forgotten_password' ? 'text-black' : 'text-gray-100',
-            }
-          }}
           localization={{
             variables: {
               sign_in: {
