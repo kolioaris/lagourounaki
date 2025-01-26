@@ -140,7 +140,8 @@ export function AuthForm() {
                   fontSize: '0.875rem',
                 }
               }
-            },
+            }
+          }
           localization={{
             variables: {
               sign_in: {
