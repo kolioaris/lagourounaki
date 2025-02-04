@@ -49,12 +49,8 @@ export function SignUp() {
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-center px-4 lg:px-6">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <RiDonutChartFill
-          className="mx-auto size-10 text-gray-50"
-          aria-hidden={true}
-        />
         <h3 className="mt-6 text-center text-lg font-bold text-gray-50">
-          Create new account for workspace
+          Create new account
         </h3>
       </div>
       <Card className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
