@@ -1,25 +1,21 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { useEffect, useState, ReactNode } from 'react';
+import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabase';
-import { AuthForm } from './components/AuthForm';
+import { LoginForm } from './components/LoginForm';
+import { SignUp } from './components/SignUp';
 import { Feed } from './pages/Feed';
 import { Profile } from './pages/Profile';
 import { TagPosts } from './pages/TagPosts';
 import { Create } from './pages/Create';
 import { Search } from './pages/Search';
 import { Messages } from './pages/Messages';
-import { Activity } from './pages/Activity';
 import { NotFound } from './pages/NotFound';
 import { OnboardingModal } from './components/OnboardingModal';
 import { Post } from './pages/Post';
 import { Footer } from './components/Footer';
 
-interface PrivateRouteProps {
-  children: ReactNode;
-}
-
-function PrivateRoute({ children }: PrivateRouteProps) {
-  const [session, setSession] = useState<any>(null);
+function PrivateRoute({ children }) {
+  const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
   const [showOnboarding, setShowOnboarding] = useState(false);
 
@@ -61,17 +57,13 @@ function PrivateRoute({ children }: PrivateRouteProps) {
   }
 
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       {showOnboarding && (
         <OnboardingModal onComplete={() => setShowOnboarding(false)} />
       )}
-      <div className="flex-1 pb-16 md:pb-0 md:pl-16">
-        {children}
-      </div>
-      <div className="md:pl-16">
-        <Footer />
-      </div>
-    </div>
+      {children}
+      <Footer />
+    </>
   );
 }
 
@@ -79,7 +71,8 @@ function App() {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/login" element={<><AuthForm /><Footer /></>} />
+        <Route path="/login" element={<><LoginForm /><Footer /></>} />
+        <Route path="/signup" element={<><SignUp /><Footer /></>} />
         <Route
           path="/"
           element={
@@ -125,14 +118,6 @@ function App() {
           element={
             <PrivateRoute>
               <Messages />
-            </PrivateRoute>
-          }
-        />
-        <Route
-          path="/activity"
-          element={
-            <PrivateRoute>
-              <Activity />
             </PrivateRoute>
           }
         />
