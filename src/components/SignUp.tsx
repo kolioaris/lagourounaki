@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
 import { Button, TextInput, Card, Checkbox } from '@tremor/react';
-import { RiDonutChartFill } from '@remixicon/react';
+import { RiDonutChartFill, RiGithubFill, RiGoogleFill } from '@remixicon/react';
 
 export function SignUp() {
   const [name, setName] = useState('');
@@ -46,11 +46,29 @@ export function SignUp() {
     }
   };
 
+  const handleSocialLogin = async (provider: 'google' | 'github') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-center px-4 lg:px-6">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <RiDonutChartFill
+          className="mx-auto size-10 text-gray-50"
+          aria-hidden={true}
+        />
         <h3 className="mt-6 text-center text-lg font-bold text-gray-50">
-          Create new account
+          Create new account for workspace
         </h3>
       </div>
       <Card className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
@@ -59,6 +77,29 @@ export function SignUp() {
             {error}
           </div>
         )}
+
+        <div className="flex flex-col gap-2 mb-6">
+          <Button 
+            variant="secondary" 
+            onClick={() => handleSocialLogin('github')}
+            className="max-w-[240px] mx-auto w-full"
+          >
+            <span className="inline-flex items-center gap-2">
+              <RiGithubFill className="size-5 shrink-0" aria-hidden={true} />
+              Sign up with GitHub
+            </span>
+          </Button>
+          <Button 
+            variant="secondary" 
+            onClick={() => handleSocialLogin('google')}
+            className="max-w-[240px] mx-auto w-full"
+          >
+            <span className="inline-flex items-center gap-2">
+              <RiGoogleFill className="size-4" aria-hidden={true} />
+              Sign up with Google
+            </span>
+          </Button>
+        </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
