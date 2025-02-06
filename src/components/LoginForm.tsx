@@ -31,6 +31,20 @@ export function LoginForm() {
     }
   };
 
+  const handleSocialLogin = async (provider: 'google' | 'github') => {
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`
+        }
+      });
+      if (error) throw error;
+    } catch (err) {
+      setError(err.message);
+    }
+  };
+
   return (
     <div className="flex min-h-screen flex-1 flex-col justify-center px-4 lg:px-6">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
@@ -55,18 +69,26 @@ export function LoginForm() {
             Sign up
           </a>
         </p>
-        <div className="mt-8 sm:flex sm:items-center sm:space-x-2">
-          <Button variant="secondary" className="w-full">
-            <a href="#" className="inline-flex items-center gap-2">
+        <div className="mt-8 flex flex-col gap-2">
+          <Button 
+            variant="secondary" 
+            onClick={() => handleSocialLogin('github')}
+            className="max-w-[240px] mx-auto w-full"
+          >
+            <span className="inline-flex items-center gap-2">
               <RiGithubFill className="size-5 shrink-0" aria-hidden={true} />
-              Login with GitHub
-            </a>
+              Sign in with GitHub
+            </span>
           </Button>
-          <Button variant="secondary" className="mt-2 w-full sm:mt-0">
-            <a href="#" className="inline-flex items-center gap-2">
+          <Button 
+            variant="secondary" 
+            onClick={() => handleSocialLogin('google')}
+            className="max-w-[240px] mx-auto w-full"
+          >
+            <span className="inline-flex items-center gap-2">
               <RiGoogleFill className="size-4" aria-hidden={true} />
-              Login with Google
-            </a>
+              Sign in with Google
+            </span>
           </Button>
         </div>
         <Divider>or</Divider>
