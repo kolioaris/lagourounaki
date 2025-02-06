@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { useNavigate } from 'react-router-dom';
-import { Button, TextInput, Card, Checkbox } from '@tremor/react';
+import { Button, TextInput, Card } from '@tremor/react';
 import { RiDonutChartFill, RiGithubFill, RiGoogleFill } from '@remixicon/react';
 
 export function SignUp() {
@@ -9,7 +9,6 @@ export function SignUp() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
-  const [newsletter, setNewsletter] = useState(false);
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
@@ -31,8 +30,7 @@ export function SignUp() {
         password,
         options: {
           data: {
-            name,
-            newsletter
+            name
           }
         }
       });
@@ -78,25 +76,25 @@ export function SignUp() {
           </div>
         )}
 
-        <div className="flex flex-col gap-2 mb-6">
+        <div className="flex justify-center gap-4 mb-6">
           <Button 
             variant="secondary" 
             onClick={() => handleSocialLogin('github')}
-            className="max-w-[240px] mx-auto w-full"
+            className="w-[160px]"
           >
             <span className="inline-flex items-center gap-2">
               <RiGithubFill className="size-5 shrink-0" aria-hidden={true} />
-              Sign up with GitHub
+              GitHub
             </span>
           </Button>
           <Button 
             variant="secondary" 
             onClick={() => handleSocialLogin('google')}
-            className="max-w-[240px] mx-auto w-full"
+            className="w-[160px]"
           >
             <span className="inline-flex items-center gap-2">
               <RiGoogleFill className="size-4" aria-hidden={true} />
-              Sign up with Google
+              Google
             </span>
           </Button>
         </div>
