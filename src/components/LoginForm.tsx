@@ -69,25 +69,25 @@ export function LoginForm() {
             Sign up
           </a>
         </p>
-        <div className="mt-8 flex flex-col gap-2">
+        <div className="mt-8 flex justify-center gap-4">
           <Button 
             variant="secondary" 
             onClick={() => handleSocialLogin('github')}
-            className="max-w-[240px] mx-auto w-full"
+            className="w-[160px]"
           >
             <span className="inline-flex items-center gap-2">
               <RiGithubFill className="size-5 shrink-0" aria-hidden={true} />
-              Sign in with GitHub
+              GitHub
             </span>
           </Button>
           <Button 
             variant="secondary" 
             onClick={() => handleSocialLogin('google')}
-            className="max-w-[240px] mx-auto w-full"
+            className="w-[160px]"
           >
             <span className="inline-flex items-center gap-2">
               <RiGoogleFill className="size-4" aria-hidden={true} />
-              Sign in with Google
+              Google
             </span>
           </Button>
         </div>
