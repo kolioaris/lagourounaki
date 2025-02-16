@@ -9,6 +9,9 @@ import { EditProfileModal } from '../components/EditProfileModal';
 import { FollowList } from '../components/FollowList';
 import { Messages } from '../components/Messages';
 import { Badge } from '../components/Badge';
+import { BlockButton } from '../components/BlockButton';
+import { ReportButton } from '../components/ReportButton';
+import { BanNotice } from '../components/BanNotice';
 
 export function Profile() {
   const { userId } = useParams();
@@ -25,6 +28,9 @@ export function Profile() {
   const [showMessages, setShowMessages] = useState(false);
   const [badges, setBadges] = useState([]);
   const [isMutualFollower, setIsMutualFollower] = useState(false);
+  const [isBlocked, setIsBlocked] = useState(false);
+  const [isBanned, setIsBanned] = useState(false);
+  const [banReason, setBanReason] = useState('');
 
   useEffect(() => {
     const getCurrentUser = async () => {
@@ -117,20 +123,45 @@ export function Profile() {
     checkMutualFollow();
   }, [currentUser, userId, isFollowing]);
 
-  const checkIfFollowing = async (currentUserId: string) => {
-    try {
+  useEffect(() => {
+    const checkBanStatus = async () => {
       const { data } = await supabase
-        .from('followers')
-        .select('*')
-        .eq('follower_id', currentUserId)
-        .eq('following_id', userId)
-        .maybeSingle(); // Use maybeSingle instead of single to avoid 406 error
+        .from('bans')
+        .select('reason')
+        .eq('user_id', userId)
+        .single();
 
-      setIsFollowing(!!data);
-    } catch (error) {
-      console.error('Error checking follow status:', error);
-      setIsFollowing(false);
-    }
+      if (data) {
+        setIsBanned(true);
+        setBanReason(data.reason);
+      }
+    };
+
+    const checkBlockStatus = async () => {
+      if (!currentUser) return;
+
+      const { data } = await supabase
+        .from('blocked_users')
+        .select('*')
+        .or(`blocker_id.eq.${currentUser.id},blocked_id.eq.${currentUser.id}`)
+        .or(`blocker_id.eq.${userId},blocked_id.eq.${userId}`)
+        .single();
+
+      setIsBlocked(!!data);
+    };
+
+    checkBanStatus();
+    checkBlockStatus();
+  }, [userId, currentUser]);
+
+  const checkIfFollowing = async (currentUserId: string) => {
+    const { data } = await supabase
+      .from('followers')
+      .select('*')
+      .eq('follower_id', currentUserId)
+      .eq('following_id', userId)
+      .single();
+    setIsFollowing(!!data);
   };
 
   const handleFollow = async () => {
@@ -180,6 +211,28 @@ export function Profile() {
   }
 
   const isOwnProfile = currentUser?.id === userId;
+
+  if (isBanned) {
+    return <BanNotice reason={banReason} />;
+  }
+
+  if (isBlocked) {
+    return (
+      <div className="flex min-h-screen">
+        <Sidebar />
+        <main className="flex-1 ml-16 bg-gray-800 p-8">
+          <div className="max-w-4xl mx-auto text-center py-12">
+            <h2 className="text-2xl font-bold mb-4">
+              {currentUser?.id === userId ? 'You have blocked this profile' : 'You are blocked by this user'}
+            </h2>
+            {currentUser?.id === userId && (
+              <BlockButton userId={userId} onBlock={() => setIsBlocked(false)} />
+            )}
+          </div>
+        </main>
+      </div>
+    );
+  }
 
   return (
     <div className="flex min-h-screen">
@@ -233,6 +286,8 @@ export function Profile() {
                             Message
                           </button>
                         )}
+                        <BlockButton userId={userId} />
+                        <ReportButton type="profile" targetId={userId} />
                       </>
                     )}
                     {isOwnProfile && (

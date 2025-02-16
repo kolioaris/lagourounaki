@@ -5,6 +5,7 @@ import { supabase } from '../lib/supabase';
 import { Heart, MessageCircle, Share2, Send, ExternalLink } from 'lucide-react';
 import { Comment } from './Comment';
 import { ShareModal } from './ShareModal';
+import { ReportButton } from './ReportButton';
 
 interface PostProps {
   post: {
@@ -66,7 +67,7 @@ export function Post({ post }: PostProps) {
       .select('*')
       .eq('post_id', post.id)
       .eq('user_id', userId)
-      .maybeSingle();
+      .single();
     setIsLiked(!!data);
   };
 
@@ -207,12 +208,12 @@ export function Post({ post }: PostProps) {
 
   return (
     <div 
-      className={`bg-gray-800 rounded-lg shadow-xl mb-4 ${
+      className={`bg-gray-800 rounded-lg shadow-xl p-4 mb-4 ${
         post.isAdvertisement ? 'cursor-pointer border border-primary-500/30' : ''
       }`}
       onClick={post.isAdvertisement ? handleAdClick : undefined}
     >
-      <div className="flex items-center gap-2 p-4 border-b border-gray-700">
+      <div className="flex items-center gap-2 mb-2">
         {post.isAdvertisement ? (
           <div className="flex items-center gap-2">
             <span className="text-primary-300 font-semibold">Sponsored</span>
@@ -227,95 +228,67 @@ export function Post({ post }: PostProps) {
           {format(new Date(post.created_at), 'MMM d, yyyy')}
         </span>
       </div>
-
+      
+      <p className="mb-4">{formatContent(post.content)}</p>
+      
       {post.image_url && (
         <img
           src={post.image_url}
           alt={post.isAdvertisement ? "Advertisement" : "Post"}
-          className="w-full object-cover max-h-96"
+          className="w-full rounded-lg mb-4"
         />
       )}
       
-      <div className="p-4">
-        <p className="mb-4">{formatContent(post.content)}</p>
-        
-        {!post.isAdvertisement && (
-          <>
-            <div className="flex items-center gap-4 mb-4">
-              <button
-                onClick={toggleLike}
-                className={`flex items-center gap-1.5 text-sm ${
-                  isLiked ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
-                }`}
-              >
-                <Heart
-                  size={20}
-                  className={isLiked ? 'fill-current' : ''}
-                />
-                {likes}
-              </button>
-              
-              <button
-                onClick={handleShowComments}
-                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-primary-300"
-              >
-                <MessageCircle size={20} />
-                {comments.length}
-              </button>
-
-              <button
-                onClick={() => setShowShareModal(true)}
-                className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-primary-300"
-              >
-                <Share2 size={20} />
-                Share
-              </button>
-            </div>
-            
-            {post.tags && post.tags.length > 0 && (
-              <div className="flex flex-wrap gap-2">
-                {post.tags.map((tag) => (
-                  <Link
-                    key={tag}
-                    to={`/tag/${tag}`}
-                    className="text-sm bg-gray-700 px-2 py-1 rounded-full hover:bg-gray-600"
-                  >
-                    #{tag}
-                  </Link>
-                ))}
-              </div>
-            )}
-          </>
-        )}
-      </div>
-
-      {showComments && (
-        <div className="fixed top-0 right-0 w-1/3 h-full bg-gray-800 border-l border-gray-700 overflow-y-auto p-4 z-50">
-          <div className="space-y-4">
-            <div className="flex justify-between items-center">
-              <h2 className="text-xl font-bold">Comments</h2>
-              <button
-                onClick={() => setShowComments(false)}
-                className="text-gray-400 hover:text-white"
-              >
-                ×
-              </button>
-            </div>
-            
-            {comments.map(comment => (
-              <Comment
-                key={comment.id}
-                comment={comment}
-                onDelete={
-                  currentUser?.id === comment.user.id
-                    ? () => handleDeleteComment(comment.id)
-                    : undefined
-                }
+      {!post.isAdvertisement && (
+        <>
+          <div className="flex items-center gap-4 mb-4">
+            <button
+              onClick={toggleLike}
+              className={`flex items-center gap-1.5 text-sm ${
+                isLiked ? 'text-red-500' : 'text-gray-400 hover:text-red-500'
+              }`}
+            >
+              <Heart
+                size={20}
+                className={isLiked ? 'fill-current' : ''}
               />
-            ))}
+              {likes}
+            </button>
             
-            <form onSubmit={handleAddComment} className="sticky bottom-0 bg-gray-800 pt-4">
-              <div className="flex gap-2">
+            <button
+              onClick={handleShowComments}
+              className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-primary-300"
+            >
+              <MessageCircle size={20} />
+              {comments.length}
+            </button>
+
+            <button
+              onClick={() => setShowShareModal(true)}
+              className="flex items-center gap-1.5 text-sm text-gray-400 hover:text-primary-300"
+            >
+              <Share2 size={20} />
+              Share
+            </button>
+
+            <ReportButton type="post" targetId={post.id} />
+          </div>
+          
+          {showComments && (
+            <div className="space-y-4 mt-4">
+              {comments.map(comment => (
+                <Comment
+                  key={comment.id}
+                  comment={comment}
+                  onDelete={
+                    currentUser?.id === comment.user.id
+                      ? () => handleDeleteComment(comment.id)
+                      : undefined
+                  }
+                />
+              ))}
+              
+              <form onSubmit={handleAddComment} className="flex gap-2">
                 <input
                   type="text"
                   value={newComment}
@@ -329,17 +302,31 @@ export function Post({ post }: PostProps) {
                 >
                   <Send size={18} />
                 </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
-      
-      {showShareModal && (
-        <ShareModal
-          postId={post.id}
-          onClose={() => setShowShareModal(false)}
-        />
+              </form>
+            </div>
+          )}
+          
+          {showShareModal && (
+            <ShareModal
+              postId={post.id}
+              onClose={() => setShowShareModal(false)}
+            />
+          )}
+          
+          {post.tags && post.tags.length > 0 && (
+            <div className="flex flex-wrap gap-2 mt-4">
+              {post.tags.map((tag) => (
+                <Link
+                  key={tag}
+                  to={`/tag/${tag}`}
+                  className="text-sm bg-gray-700 px-2 py-1 rounded-full hover:bg-gray-600"
+                >
+                  #{tag}
+                </Link>
+              ))}
+            </div>
+          )}
+        </>
       )}
     </div>
   );

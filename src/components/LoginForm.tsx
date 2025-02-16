@@ -69,7 +69,15 @@ export function LoginForm() {
             Sign up
           </a>
         </p>
-        <div className="mt-8 flex justify-center gap-4">
+      </div>
+      <Card className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        {error && (
+          <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm">
+            {error}
+          </div>
+        )}
+
+        <div className="flex justify-center gap-4 mb-6">
           <Button 
             variant="secondary" 
             onClick={() => handleSocialLogin('github')}
@@ -91,13 +99,8 @@ export function LoginForm() {
             </span>
           </Button>
         </div>
-        <Divider>or</Divider>
 
-        {error && (
-          <div className="mb-4 p-3 bg-red-500/10 border border-red-500 rounded text-red-500 text-sm">
-            {error}
-          </div>
-        )}
+        <Divider>or</Divider>
 
         <form onSubmit={handleSubmit} className="mt-6 space-y-4">
           <div>
@@ -156,7 +159,7 @@ export function LoginForm() {
             Reset password
           </a>
         </p>
-      </div>
+      </Card>
     </div>
   );
 }

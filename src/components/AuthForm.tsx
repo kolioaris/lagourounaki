@@ -16,8 +16,6 @@ export function AuthForm() {
     const hash = window.location.hash;
     if (hash && hash.includes('type=recovery')) {
       setView('update_password');
-    } else {
-      setView('sign_in');
     }
 
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
@@ -46,17 +44,58 @@ export function AuthForm() {
     </button>
   );
 
-  const Input = (props) => {
+  const PasswordInput = (props) => {
     if (props.type !== 'password') return <input {...props} />;
 
     return (
-      <div className="relative">
-        <input
-          {...props}
-          type={showPassword ? 'text' : 'password'}
-          className={props.className}
-        />
-        <PasswordToggle />
+      <div className="space-y-2">
+        <div className="relative">
+          <input
+            {...props}
+            type={showPassword ? 'text' : 'password'}
+            className={props.className}
+          />
+          <PasswordToggle />
+        </div>
+        {view === 'sign_up' && (
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              checked={tosAgreed}
+              onChange={(e) => {
+                setTosAgreed(e.target.checked);
+                setError('');
+              }}
+              className="w-4 h-4 rounded border-gray-600 text-primary-500 focus:ring-primary-500"
+            />
+            <span className="text-sm text-gray-300">
+              I agree to the{' '}
+              <a
+                href="/terms"
+                target="_blank"
+                className="text-primary-300 hover:text-primary-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open('/terms', '_blank');
+                }}
+              >
+                TOS
+              </a>
+              {' '}and{' '}
+              <a
+                href="/privacy"
+                target="_blank"
+                className="text-primary-300 hover:text-primary-200"
+                onClick={(e) => {
+                  e.preventDefault();
+                  window.open('/privacy', '_blank');
+                }}
+              >
+                Privacy Policy
+              </a>
+            </span>
+          </div>
+        )}
       </div>
     );
   };
@@ -107,12 +146,6 @@ export function AuthForm() {
                 '&:hover': {
                   backgroundColor: '#476FA7',
                   border: '2px solid #7593BD',
-                },
-                '&:disabled': {
-                  opacity: '0.5',
-                  cursor: 'not-allowed',
-                  backgroundColor: '#213555',
-                  border: '2px solid #1a2942',
                 }
               },
               input: {
@@ -153,9 +186,7 @@ export function AuthForm() {
             },
             className: {
               container: 'text-gray-100',
-              button: `bg-primary-500 hover:bg-primary-600 transition-colors ${
-                view === 'sign_up' && !tosAgreed ? 'opacity-50 cursor-not-allowed' : ''
-              }`,
+              button: 'bg-primary-500 hover:bg-primary-600 transition-colors',
               input: 'bg-gray-700 border-gray-600 focus:border-primary-500 focus:ring-primary-500',
               label: 'text-gray-300',
               loader: 'text-primary-500',
@@ -200,33 +231,9 @@ export function AuthForm() {
             }
           }}
           customComponents={{
-            Input
+            Input: PasswordInput
           }}
-          onViewChange={handleViewChange}
-          submitButtonDisabled={view === 'sign_up' && !tosAgreed}
         />
-        {view === 'sign_up' && (
-          <div className="mt-4 flex items-center gap-2 text-sm text-gray-400">
-            <input
-              type="checkbox"
-              id="tos-checkbox"
-              checked={tosAgreed}
-              onChange={(e) => setTosAgreed(e.target.checked)}
-              className="h-4 w-4 rounded border-gray-600 text-primary-500 focus:ring-primary-500"
-            />
-            <label htmlFor="tos-checkbox">
-              I agree to the{' '}
-              <a
-                href="/terms-of-service"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-primary-500 hover:underline"
-              >
-                TOS and Privacy Policy
-              </a>
-            </label>
-          </div>
-        )}
       </div>
     </div>
   );

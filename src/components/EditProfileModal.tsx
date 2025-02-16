@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { supabase } from '../lib/supabase';
-import { User, Mail, Calendar, X, Upload, Trash2 } from 'lucide-react';
+import { User, Mail, Calendar, X, Upload } from 'lucide-react';
 
 interface EditProfileModalProps {
   onClose: () => void;
@@ -16,7 +16,6 @@ export function EditProfileModal({ onClose, userData, onUpdate }: EditProfileMod
   const [avatarUrl, setAvatarUrl] = useState(userData.avatar_url || '');
   const [error, setError] = useState('');
   const [isUploading, setIsUploading] = useState(false);
-  const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
 
   const uploadAvatar = async (file: File) => {
     try {
@@ -97,17 +96,6 @@ export function EditProfileModal({ onClose, userData, onUpdate }: EditProfileMod
       onClose();
     } catch (err) {
       setError('An unexpected error occurred.');
-    }
-  };
-
-  const handleDeleteAccount = async () => {
-    try {
-      const { error } = await supabase.auth.admin.deleteUser(userData.id);
-      if (error) throw error;
-      await supabase.auth.signOut();
-      window.location.href = '/';
-    } catch (err) {
-      setError('Failed to delete account. Please try again later.');
     }
   };
 
@@ -255,41 +243,6 @@ export function EditProfileModal({ onClose, userData, onUpdate }: EditProfileMod
           >
             {isUploading ? 'Uploading...' : 'Save Changes'}
           </button>
-
-          <div className="pt-6 border-t border-gray-700">
-            {!showDeleteConfirm ? (
-              <button
-                type="button"
-                onClick={() => setShowDeleteConfirm(true)}
-                className="w-full py-4 text-lg font-semibold bg-red-500/10 text-red-500 rounded-lg hover:bg-red-500/20 transition-colors flex items-center justify-center gap-2"
-              >
-                <Trash2 size={20} />
-                Delete Account
-              </button>
-            ) : (
-              <div className="space-y-4">
-                <p className="text-red-500 text-center">
-                  Are you sure you want to delete your account? This action cannot be undone.
-                </p>
-                <div className="flex gap-4">
-                  <button
-                    type="button"
-                    onClick={() => setShowDeleteConfirm(false)}
-                    className="flex-1 py-3 text-lg font-semibold bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors"
-                  >
-                    Cancel
-                  </button>
-                  <button
-                    type="button"
-                    onClick={handleDeleteAccount}
-                    className="flex-1 py-3 text-lg font-semibold bg-red-500 text-white rounded-lg hover:bg-red-600 transition-colors"
-                  >
-                    Delete
-                  </button>
-                </div>
-              </div>
-            )}
-          </div>
         </form>
       </div>
     </div>

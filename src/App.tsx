@@ -3,12 +3,14 @@ import { useEffect, useState } from 'react';
 import { supabase } from './lib/supabase';
 import { LoginForm } from './components/LoginForm';
 import { SignUp } from './components/SignUp';
+import { ResetPassword } from './components/ResetPassword';
 import { Feed } from './pages/Feed';
 import { Profile } from './pages/Profile';
 import { TagPosts } from './pages/TagPosts';
 import { Create } from './pages/Create';
 import { Search } from './pages/Search';
 import { Messages } from './pages/Messages';
+import { Liked } from './pages/Liked';
 import { NotFound } from './pages/NotFound';
 import { OnboardingModal } from './components/OnboardingModal';
 import { Post } from './pages/Post';
@@ -73,6 +75,7 @@ function App() {
       <Routes>
         <Route path="/login" element={<><LoginForm /><Footer /></>} />
         <Route path="/signup" element={<><SignUp /><Footer /></>} />
+        <Route path="/reset-password" element={<ResetPassword />} />
         <Route
           path="/"
           element={
@@ -118,6 +121,14 @@ function App() {
           element={
             <PrivateRoute>
               <Messages />
+            </PrivateRoute>
+          }
+        />
+        <Route
+          path="/liked"
+          element={
+            <PrivateRoute>
+              <Liked />
             </PrivateRoute>
           }
         />

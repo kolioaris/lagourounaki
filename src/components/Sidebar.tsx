@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
-import { Home, Search, PlusSquare, UserCircle, LogOut, MessageCircle, Bell } from 'lucide-react';
+import { Home, Search, PlusSquare, UserCircle, LogOut, MessageCircle, Heart } from 'lucide-react';
 import { supabase } from '../lib/supabase';
 
 export function Sidebar() {
@@ -36,7 +36,7 @@ export function Sidebar() {
     { icon: Search, label: 'Search', path: '/search' },
     { icon: PlusSquare, label: 'Create', path: '/create' },
     { icon: MessageCircle, label: 'Messages', path: '/messages' },
-    { icon: Bell, label: 'Activity', path: '/activity' },
+    { icon: Heart, label: 'Liked', path: '/liked' },
     { icon: UserCircle, label: 'Profile', path: currentUser ? `/profile/${currentUser.id}` : '#' }
   ];
 
@@ -67,9 +67,9 @@ export function Sidebar() {
 
   return (
     <div
-      className={`fixed left-0 top-0 h-screen bg-[#1a1a1a] border-r border-[#213555] shadow-xl ${
+      className={`fixed left-0 top-0 h-full bg-[#1a1a1a] border-r border-[#213555] shadow-xl ${
         isExpanded ? 'w-64' : 'w-16'
-      } transition-[width] duration-200 ease-in-out z-50`}
+      } transition-[width] duration-200 ease-in-out`}
       onMouseEnter={() => setIsExpanded(true)}
       onMouseLeave={() => setIsExpanded(false)}
     >

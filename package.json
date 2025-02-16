@@ -1,7 +1,7 @@
 {
-  "name": "lagourounaki",
+  "name": "social-media-app",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,14 +17,15 @@
     "@supabase/auth-ui-shared": "^0.1.8",
     "@supabase/supabase-js": "^2.39.7",
     "@tremor/react": "^3.14.0",
+    "@vercel/speed-insights": "^1.1.0",
+    "socket.io-client": "^4.7.4",
     "date-fns": "^3.3.1",
     "framer-motion": "^11.0.3",
     "lucide-react": "^0.344.0",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-dropzone": "^14.2.3",
-    "react-router-dom": "^6.22.2",
-    "socket.io-client": "^4.7.4"
+    "react-router-dom": "^6.22.2"
   },
   "devDependencies": {
     "@eslint/js": "^9.9.1",

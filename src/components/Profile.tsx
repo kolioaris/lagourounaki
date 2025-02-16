@@ -1,4 +1,16 @@
-import { UserCircle } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { useParams } from 'react-router-dom';
+import { supabase } from '../lib/supabase';
+import { Post } from '../components/Post';
+import { Sidebar } from '../components/Sidebar';
+import { UserCircle, Calendar, Mail, Edit2, Users } from 'lucide-react';
+import { format } from 'date-fns';
+import { EditProfileModal } from '../components/EditProfileModal';
+import { FollowList } from '../components/FollowList';
+import { Messages } from '../components/Messages';
+import { Badge } from '../components/Badge';
+import { BlockButton } from '../components/BlockButton';
+import { ReportButton } from '../components/ReportButton';
 
 interface ProfileProps {
   user: {
@@ -9,7 +21,7 @@ interface ProfileProps {
   size?: 'sm' | 'md' | 'lg';
 }
 
-export function Profile({ user, size = 'md' }: ProfileProps) {
+export function Profile() {
   const sizeClasses = {
     sm: 'w-8 h-8',
     md: 'w-10 h-10',
@@ -35,19 +47,49 @@ export function Profile({ user, size = 'md' }: ProfileProps) {
     }
   };
 
-  if (user.avatar_url) {
-    return (
-      <img
-        src={user.avatar_url}
-        alt={user.name || user.email}
-        className={`${sizeClasses[size]} rounded-full object-cover`}
-      />
-    );
-  }
-
   return (
-    <div className={`${sizeClasses[size]} rounded-full bg-gray-700 flex items-center justify-center`}>
-      <UserCircle size={iconSizes[size]} className="text-gray-400" />
+    <div className="flex min-h-screen">
+      <Sidebar />
+      <main className="flex-1 ml-16 bg-gray-800 p-8">
+        <div className="max-w-4xl mx-auto">
+          <div className="bg-gray-700 rounded-lg shadow-xl p-8 mb-8">
+            <div className="flex items-start gap-6">
+              <div className="flex-1">
+                <div className="flex justify-between items-start">
+                  <div>
+                  </div>
+                  <div className="flex gap-2">
+                    {!isOwnProfile && (
+                      <>
+                        <button
+                          onClick={handleFollow}
+                          className={`px-4 py-2 rounded-lg transition-colors ${
+                            isFollowing
+                              ? 'bg-gray-600 text-white hover:bg-gray-500'
+                              : 'bg-primary-500 text-white hover:bg-primary-600'
+                          }`}
+                        >
+                          {isFollowing ? 'Unfollow' : 'Follow'}
+                        </button>
+                        {isMutualFollower && (
+                          <button
+                            onClick={() => setShowMessages(true)}
+                            className="px-4 py-2 bg-primary-500 text-white rounded-lg hover:bg-primary-600 transition-colors"
+                          >
+                            Message
+                          </button>
+                        )}
+                        <BlockButton userId={userId} />
+                        <ReportButton type="profile" targetId={userId} />
+                      </>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </main>
     </div>
   );
 }
